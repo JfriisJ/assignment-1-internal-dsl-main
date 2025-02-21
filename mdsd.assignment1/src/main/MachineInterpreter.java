@@ -42,27 +42,50 @@ public class MachineInterpreter {
             throw new IllegalStateException("Current state is not initialized.");
         }
 
-        // Store the event in the event history
         eventHistory.add(event);
         System.out.println("Processing Event: " + event);
         Transition transition = this.currentState.getTransitionByEvent(event);
         if (transition != null) {
-            this.currentState = transition.getTarget();
-            System.out.println("New State: " + this.currentState.getName());
-        }
-
-        // Example switch on event to update a variable named 'counter'
-        if (event.equals("increment")) {
-            int current = variables.getOrDefault("counter", 0);
-            variables.put("counter", current + 1);
-        } else if (event.equals("decrement")) {
-            int current = variables.getOrDefault("counter", 0);
-            variables.put("counter", current - 1);
-        } else if (event.startsWith("set")) {
-            // For an event like "set:counter:5"
-            String[] parts = event.split(":");
-            if (parts.length == 3) {
-                variables.put(parts[1], Integer.parseInt(parts[2]));
+            // Check conditions if transition is conditional
+            boolean conditionSatisfied = true;
+            if (transition.isConditional()) {
+                int actual = variables.getOrDefault(transition.getConditionVariableName(), 0);
+                int expected = transition.getConditionComparedValue();
+                if (transition.isConditionEqual()) {
+                    conditionSatisfied = (actual == expected);
+                } else if (transition.isConditionGreaterThan()) {
+                    conditionSatisfied = (actual > expected);
+                } else if (transition.isConditionLessThan()) {
+                    conditionSatisfied = (actual < expected);
+                }
+            }
+            // Execute transition only if condition holds or not conditional
+            if (conditionSatisfied) {
+                if (transition.hasSetOperation()) {
+                    variables.put(transition.getOperationVariableName(), transition.getSetValue());
+                } else if (transition.hasIncrementOperation()) {
+                    String varName = transition.getOperationVariableName();
+                    variables.put(varName, variables.getOrDefault(varName, 0) + 1);
+                } else if (transition.hasDecrementOperation()) {
+                    String varName = transition.getOperationVariableName();
+                    variables.put(varName, variables.getOrDefault(varName, 0) - 1);
+                }
+                this.currentState = transition.getTarget();
+                System.out.println("New State: " + this.currentState.getName());
+            }
+        } else {
+            // Fallback for specific event string operations if no matching transition
+            if (event.equals("increment")) {
+                int current = variables.getOrDefault("counter", 0);
+                variables.put("counter", current + 1);
+            } else if (event.equals("decrement")) {
+                int current = variables.getOrDefault("counter", 0);
+                variables.put("counter", current - 1);
+            } else if (event.startsWith("set:")) {
+                String[] parts = event.split(":");
+                if (parts.length == 3) {
+                    variables.put(parts[1], Integer.parseInt(parts[2]));
+                }
             }
         }
     }

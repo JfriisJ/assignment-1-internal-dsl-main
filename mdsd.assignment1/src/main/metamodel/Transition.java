@@ -1,15 +1,16 @@
 package main.metamodel;
 
-public class Transition{
+public class Transition {
 
 	private String event;
 	private State target;
-	private boolean setOperation = false; // Initialize as not operation
+	private boolean setOperation = false;
 	private boolean incrementOperation = false;
 	private boolean decrementOperation = false;
-	private Object operationVariableName;
-	private boolean conditional = false; // Initialize as not conditional
-	private Object conditionVariableName;
+	private String operationVariableName;
+	private int setValue;
+	private boolean conditional = false;
+	private String conditionVariableName;
 	private Integer conditionComparedValue;
 	private boolean conditionEqual = false;
 	private boolean conditionGreaterThan = false;
@@ -20,79 +21,108 @@ public class Transition{
 		this.target = targetState;
 	}
 
-
-	public Object getEvent() {
-		// TODO Auto-generated method stub
+	public String getEvent() {
 		return this.event;
 	}
 
 	public State getTarget() {
-		// TODO Auto-generated method stub
 		return this.target;
 	}
 
 	public boolean hasSetOperation() {
-		// TODO Auto-generated method stub
 		return this.setOperation;
 	}
 
 	public boolean hasIncrementOperation() {
-		// TODO Auto-generated method stub
 		return this.incrementOperation;
 	}
 
 	public boolean hasDecrementOperation() {
-		// TODO Auto-generated method stub
 		return this.decrementOperation;
 	}
 
-	public Object getOperationVariableName() {
-		// TODO Auto-generated method stub
+	public String getOperationVariableName() {
 		return this.operationVariableName;
 	}
 
+	public int getSetValue() {
+		return this.setValue;
+	}
+
 	public boolean isConditional() {
-		// TODO Auto-generated method stub
 		return this.conditional;
 	}
 
-	public Object getConditionVariableName() {
-		// TODO Auto-generated method stub
+	public String getConditionVariableName() {
 		return this.conditionVariableName;
 	}
 
 	public Integer getConditionComparedValue() {
-		// TODO Auto-generated method stub
 		return this.conditionComparedValue;
 	}
 
 	public boolean isConditionEqual() {
-		// TODO Auto-generated method stub
 		return this.conditionEqual;
 	}
 
 	public boolean isConditionGreaterThan() {
-		// TODO Auto-generated method stub
 		return this.conditionGreaterThan;
 	}
 
 	public boolean isConditionLessThan() {
-		// TODO Auto-generated method stub
 		return this.conditionLessThan;
 	}
 
 	public boolean hasOperation() {
-		// TODO Auto-generated method stub
-		return this.setOperation;
+		return this.setOperation || this.incrementOperation || this.decrementOperation;
 	}
 
-	public void setConditional(String conditionVariable, int conditionComparedValue) {
-		this.conditionVariableName = conditionVariable;
-		this.conditionComparedValue = conditionComparedValue;
-		this.conditional = true; // Set as conditional
-		this.conditionEqual = (this.conditionComparedValue == 0);
-		this.conditionGreaterThan = (this.conditionComparedValue > 0);
-		this.conditionLessThan = (this.conditionComparedValue < 0);
+	// Helper method to mark this transition as a set operation and store the value.
+	public void setSetOperation(String variableName, int value) {
+		this.operationVariableName = variableName;
+		this.setValue = value;
+		this.setOperation = true;
 	}
 
+	// Added helper method to mark increment operation.
+	public void setIncrementOperation(String variableName) {
+		this.operationVariableName = variableName;
+		this.incrementOperation = true;
+	}
+
+	// Added helper method to mark decrement operation.
+	public void setDecrementOperation(String variableName) {
+		this.operationVariableName = variableName;
+		this.decrementOperation = true;
+	}
+
+	// Added helper method to define condition equal.
+	public void setConditionEquals(String variable, int value) {
+		this.conditionVariableName = variable;
+		this.conditionComparedValue = value;
+		this.conditional = true;
+		this.conditionEqual = true;
+		this.conditionGreaterThan = false;
+		this.conditionLessThan = false;
+	}
+
+	// Added helper method to define condition less than.
+	public void setConditionLessThan(String variable, int value) {
+		this.conditionVariableName = variable;
+		this.conditionComparedValue = value;
+		this.conditional = true;
+		this.conditionEqual = false;
+		this.conditionGreaterThan = false;
+		this.conditionLessThan = true;
+	}
+
+	// Added helper method to define condition greater than.
+	public void setConditionGreaterThan(String variable, int value) {
+		this.conditionVariableName = variable;
+		this.conditionComparedValue = value;
+		this.conditional = true;
+		this.conditionEqual = false;
+		this.conditionGreaterThan = true;
+		this.conditionLessThan = false;
+	}
 }
