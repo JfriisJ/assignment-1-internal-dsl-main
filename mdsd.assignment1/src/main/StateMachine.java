@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class StateMachine {
 
@@ -18,30 +19,9 @@ public class StateMachine {
 	private String event;
 	private Map<String, Integer> variables = new HashMap<>();
 
-
-
+	Logger logger = Logger.getLogger(StateMachine.class.getName());
 	public Machine build() {
-		// Ensure the machine has at least one state and an initial state
-		if (this.initialState == null) {
-			throw new IllegalStateException("Initial state is not set");
-		}
-
-		// Ensure currentState is set to the initial state if not already set
-		if (this.currentState == null) {
-			this.currentState = this.initialState;
-		}
-
-		// Create a list to hold all states
-		List<State> states = new ArrayList<>();
-		states.add(this.initialState);
-
-		// Get all transitions from the current state (ensure it's not null)
-		List<Transition> transitions = this.currentState != null && this.currentState.getTransitions() != null
-				? new ArrayList<>(this.currentState.getTransitions())
-				: new ArrayList<>();
-
-		// Create and return the Machine object
-		return new Machine(states, this.initialState, transitions);
+		return new Machine(new ArrayList<>(states), initialState, variables);
 	}
 
 	public StateMachine initialState(State initialState) {
@@ -51,8 +31,11 @@ public class StateMachine {
 
 
 	public StateMachine state(String name) {
+		logger.info("Creating state: " + name);
 		this.currentState = new State(name);
+		logger.info("State created: " + this.currentState.getName());
 		states.add(this.currentState);  // Add the state to the list
+		logger.info("State added to list: " + this.currentState.getName());
 		return this;
 	}
 

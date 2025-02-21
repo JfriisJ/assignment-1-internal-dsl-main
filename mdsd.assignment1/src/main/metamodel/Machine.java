@@ -2,19 +2,18 @@ package main.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Machine {
 
 	private List<State> states;
 	private State initialState;
-	private List<Transition> transitions;
-	private List<Integer> integers = new ArrayList<>(); // Initialize the list
+	private Map<String, Integer> variables;
 
-
-	public Machine(List<State> states, State initialState, List<Transition> transitions) {
+	public Machine(List<State> states, State initialState, Map<String, Integer> variables) {
 		this.states = states;
 		this.initialState = initialState;
-		this.transitions = transitions;
+		this.variables = variables;
 	}
 
 	public List<State> getStates() {
@@ -27,20 +26,20 @@ public class Machine {
 		return this.initialState;
 	}
 
-	public State getState(String string) {
-		// TODO Auto-generated method stub
-		return states.stream().filter(state -> state.getName().equals(string)).findFirst().orElse(null);
+	public State getState(String name) {
+		for (State state : states) {
+			if (state.getName().equals(name)) {
+				return state;
+			}
+		}
+		return null;
 	}
-
 	public int numberOfIntegers() {
-		// TODO Auto-generated method stub
-		return integers.size();
+		return variables.size();
 	}
 
-	public boolean hasInteger(String string) {
-		// TODO Auto-generated method stub
-		// it should return true if the integer with the given name exists
-		return integers.stream().anyMatch(integer -> integer.toString().equals(string));
+	public boolean hasInteger(String varName) {
+		return variables.containsKey(varName);
 	}
 }
 

@@ -16,7 +16,7 @@ public class State {
 
 	}
 
-	public Object getName() {
+	public String getName() {
 		// TODO Auto-generated method stub
 		return this.name;
 	}

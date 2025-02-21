@@ -19,6 +19,12 @@ public class Transition{
 	public Transition(String event, State targetState) {
 		this.event = event;
 		this.target = targetState;
+		this.conditional = false; // Initialize as not conditional
+		this.conditionVariableName = null;
+		this.conditionComparedValue = null;
+		this.conditionEqual = false;
+		this.conditionGreaterThan = false;
+		this.conditionLessThan = false;
 	}
 
 
@@ -85,6 +91,15 @@ public class Transition{
 	public boolean hasOperation() {
 		// TODO Auto-generated method stub
 		return this.operation;
+	}
+
+	public void setConditional(String conditionVariable, int conditionComparedValue) {
+		this.conditionVariableName = conditionVariable;
+		this.conditionComparedValue = conditionComparedValue;
+		this.conditional = true; // Set as conditional
+		this.conditionEqual = (this.conditionComparedValue.equals(this.conditionVariableName));
+		this.conditionGreaterThan = (this.conditionComparedValue > 0);
+		this.conditionLessThan = (this.conditionComparedValue < 0);
 	}
 
 }
