@@ -1,3 +1,4 @@
+// language: java
 package main;
 
 import main.metamodel.Machine;
@@ -44,35 +45,47 @@ public class MachineInterpreter {
 
         eventHistory.add(event);
         System.out.println("Processing Event: " + event);
-        Transition transition = this.currentState.getTransitionByEvent(event);
-        if (transition != null) {
-            // Check conditions if transition is conditional
+
+        // Retrieve all transitions for the event
+        List<Transition> candidates = new ArrayList<>();
+        for (Transition t : this.currentState.getTransitions()) {
+            if (t.getEvent().equals(event)) {
+                candidates.add(t);
+            }
+        }
+
+        Transition selected = null;
+        for (Transition candidate : candidates) {
             boolean conditionSatisfied = true;
-            if (transition.isConditional()) {
-                int actual = variables.getOrDefault(transition.getConditionVariableName(), 0);
-                int expected = transition.getConditionComparedValue();
-                if (transition.isConditionEqual()) {
+            if (candidate.isConditional()) {
+                int actual = variables.getOrDefault(candidate.getConditionVariableName(), 0);
+                int expected = candidate.getConditionComparedValue();
+                if (candidate.isConditionEqual()) {
                     conditionSatisfied = (actual == expected);
-                } else if (transition.isConditionGreaterThan()) {
+                } else if (candidate.isConditionGreaterThan()) {
                     conditionSatisfied = (actual > expected);
-                } else if (transition.isConditionLessThan()) {
+                } else if (candidate.isConditionLessThan()) {
                     conditionSatisfied = (actual < expected);
                 }
             }
-            // Execute transition only if condition holds or not conditional
             if (conditionSatisfied) {
-                if (transition.hasSetOperation()) {
-                    variables.put(transition.getOperationVariableName(), transition.getSetValue());
-                } else if (transition.hasIncrementOperation()) {
-                    String varName = transition.getOperationVariableName();
-                    variables.put(varName, variables.getOrDefault(varName, 0) + 1);
-                } else if (transition.hasDecrementOperation()) {
-                    String varName = transition.getOperationVariableName();
-                    variables.put(varName, variables.getOrDefault(varName, 0) - 1);
-                }
-                this.currentState = transition.getTarget();
-                System.out.println("New State: " + this.currentState.getName());
+                selected = candidate;
+                break;
             }
+        }
+
+        if (selected != null) {
+            if (selected.hasSetOperation()) {
+                variables.put(selected.getOperationVariableName(), selected.getSetValue());
+            } else if (selected.hasIncrementOperation()) {
+                String varName = selected.getOperationVariableName();
+                variables.put(varName, variables.getOrDefault(varName, 0) + 1);
+            } else if (selected.hasDecrementOperation()) {
+                String varName = selected.getOperationVariableName();
+                variables.put(varName, variables.getOrDefault(varName, 0) - 1);
+            }
+            this.currentState = selected.getTarget();
+            System.out.println("New State: " + this.currentState.getName());
         } else {
             // Fallback for specific event string operations if no matching transition
             if (event.equals("increment")) {
@@ -95,9 +108,7 @@ public class MachineInterpreter {
         return eventHistory;
     }
 
-
     public int getInteger(String name) {
         return variables.getOrDefault(name, 0);
     }
 }
-
