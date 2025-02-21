@@ -2,8 +2,8 @@ package main.metamodel;
 
 public class Transition {
 
-	private String event;
-	private State target;
+	private final String event;
+	private final State target;
 	private boolean setOperation = false;
 	private boolean incrementOperation = false;
 	private boolean decrementOperation = false;
