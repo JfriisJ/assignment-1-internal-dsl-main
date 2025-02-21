@@ -24,10 +24,19 @@ public class StateMachine {
 		return new Machine(new ArrayList<>(states), initialState, variables);
 	}
 
-	public StateMachine initialState(State initialState) {
-		this.initialState = initialState;
-		return this;
+
+	public void transition(State newState) {
+		// Ensure current state is not null before transitioning
+		if (currentState == null) {
+			System.out.println("Current state is null, cannot transition.");
+			return;
+		}
+
+		// Perform the transition logic here
+		currentState = newState;
+		System.out.println("Transitioned to: " + newState);
 	}
+
 
 
 	public StateMachine state(String name) {
@@ -41,8 +50,9 @@ public class StateMachine {
 
 
 	public StateMachine initial() {
-		if (this.currentState != null) {
-			this.initialState = this.currentState;
+		if (currentState != null) {
+			initialState = currentState;
+			logger.info("Setting initial state: " + initialState.getName());
 		}
 		return this;
 	}
@@ -54,13 +64,21 @@ public class StateMachine {
 
 	public StateMachine to(String targetStateName) {
 		State targetState = findStateByName(targetStateName);
-		Transition transition = new Transition(this.event, targetState);
-		this.currentState.addTransition(transition);
+		if (targetState == null) {
+			System.out.println("Target state not found: " + targetStateName);
+			return this; // Return early if the state is not found
+		}
+
+		if (currentState != null) {
+			transition(targetState);
+		} else {
+			System.out.println("Current state is null, cannot perform transition.");
+		}
 		return this;
 	}
 
 	private State findStateByName(String targetStateName) {
-		for (State state : this.states) {
+		for (State state : states) {
 			if (state.getName().equals(targetStateName)) {
 				return state;
 			}
@@ -68,46 +86,54 @@ public class StateMachine {
 		return null; // Return null if not found
 	}
 
+
 	public StateMachine integer(String varName) {
 		// Initialize the variable
 		variables.put(varName, 0); // Default value can be 0
-		return this; // Ensure we return 'this' for fluent chaining
+		logger.info("Initializing variable " + varName + " to: " + variables.get(varName));
+		return this;
 	}
 
 	public StateMachine set(String varName, int value) {
 		if (variables.containsKey(varName)) {
 			variables.put(varName, value);
 		}
-		return this; // Again, return 'this' for fluent chaining
+		logger.info("Setting variable " + varName + " to: " + variables.get(varName));
+		return this; // Return 'this' for fluent chaining
 	}
 
 	public StateMachine increment(String varName) {
 		if (variables.containsKey(varName)) {
 			variables.put(varName, variables.get(varName) + 1);
 		}
-		return this;
+		logger.info("Incrementing variable " + varName + " to: " + variables.get(varName));
+		return this; // Return 'this' for fluent chaining
 	}
-
 	public StateMachine decrement(String varName) {
 		if (variables.containsKey(varName)) {
 			variables.put(varName, variables.get(varName) - 1);
 		}
-		return this;
+		logger.info("Decrementing variable " + varName + " to: " + variables.get(varName));
+		return this; // Return 'this' for fluent chaining
 	}
 
 	public StateMachine ifEquals(String varName, int value) {
 		// Store the condition so we can evaluate it later
-		this.currentState.addCondition(varName, value, ConditionType.EQUALS);
-		return this; // Return this to allow chaining
+		currentState.addCondition(varName, value, ConditionType.EQUALS);
+		logger.info("Adding condition: " + varName + "=" + value);
+		return this; // Return 'this' for fluent chaining
 	}
 
+
 	public StateMachine ifLessThan(String varName, int value) {
-		this.currentState.addCondition(varName, value, ConditionType.LESS_THAN);
+		currentState.addCondition(varName, value, ConditionType.LESS_THAN);
+		logger.info("Adding condition: " + varName + "<" + value);
 		return this;
 	}
 
 	public StateMachine ifGreaterThan(String varName, int value) {
-		this.currentState.addCondition(varName, value, ConditionType.GREATER_THAN);
+		currentState.addCondition(varName, value, ConditionType.GREATER_THAN);
+		logger.info("Adding condition: " + varName + ">" + value);
 		return this;
 	}
 

@@ -5,23 +5,27 @@ import main.metamodel.State;
 import main.metamodel.Transition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MachineInterpreter {
 
     private State currentState;
     private Machine machine;
     private List<String> eventHistory;
-
+    private Map<String, Integer> variables;
 
     public MachineInterpreter() {
         this.currentState = null;
         this.machine = null;
-        this.eventHistory = new ArrayList<>(); // Initialize the event history list
+        this.eventHistory = new ArrayList<>();
+        this.variables = new HashMap<>();
     }
-
     public void run(Machine m) {
-        this.currentState = machine.getInitialState();
+        // Assign the machine before using it
+        this.machine = m;
+        this.currentState = m.getInitialState();
         if (this.currentState == null) {
             throw new IllegalStateException("Initial state is not set.");
         }
@@ -40,12 +44,26 @@ public class MachineInterpreter {
 
         // Store the event in the event history
         eventHistory.add(event);
-
-        System.out.println("Processing Event: " + event); // Debugging line
+        System.out.println("Processing Event: " + event);
         Transition transition = this.currentState.getTransitionByEvent(event);
         if (transition != null) {
             this.currentState = transition.getTarget();
-            System.out.println("New State: " + this.currentState.getName()); // Debugging line
+            System.out.println("New State: " + this.currentState.getName());
+        }
+
+        // Example switch on event to update a variable named 'counter'
+        if (event.equals("increment")) {
+            int current = variables.getOrDefault("counter", 0);
+            variables.put("counter", current + 1);
+        } else if (event.equals("decrement")) {
+            int current = variables.getOrDefault("counter", 0);
+            variables.put("counter", current - 1);
+        } else if (event.startsWith("set")) {
+            // For an event like "set:counter:5"
+            String[] parts = event.split(":");
+            if (parts.length == 3) {
+                variables.put(parts[1], Integer.parseInt(parts[2]));
+            }
         }
     }
 
@@ -56,8 +74,7 @@ public class MachineInterpreter {
 
 
     public int getInteger(String name) {
-        // Retrieve an integer associated with a state (you can customize how you store integers in states)
-        return 0;
+        return variables.getOrDefault(name, 0);
     }
 }
 
