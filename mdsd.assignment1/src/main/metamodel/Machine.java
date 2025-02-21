@@ -1,14 +1,13 @@
 package main.metamodel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Machine {
 
-	private List<State> states;
-	private State initialState;
-	private Map<String, Integer> variables;
+	private final List<State> states;
+	private final State initialState;
+	private final Map<String, Integer> variables;
 
 	public Machine(List<State> states, State initialState, Map<String, Integer> variables) {
 		this.states = states;
@@ -17,12 +16,10 @@ public class Machine {
 	}
 
 	public List<State> getStates() {
-		// TODO Auto-generated method stub
 		return this.states;
 	}
 
 	public State getInitialState() {
-		// TODO Auto-generated method stub
 		return this.initialState;
 	}
 

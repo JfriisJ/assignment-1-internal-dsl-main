@@ -14,8 +14,8 @@ public class MachineInterpreter {
 
     private State currentState;
     private Machine machine;
-    private List<String> eventHistory;
-    private Map<String, Integer> variables;
+    private final List<String> eventHistory;
+    private final Map<String, Integer> variables;
 
     public MachineInterpreter() {
         this.currentState = null;
@@ -30,7 +30,6 @@ public class MachineInterpreter {
         if (this.currentState == null) {
             throw new IllegalStateException("Initial state is not set.");
         }
-        System.out.println("Initial State: " + this.currentState.getName());
     }
 
     public State getCurrentState() {
@@ -42,9 +41,7 @@ public class MachineInterpreter {
         if (this.currentState == null) {
             throw new IllegalStateException("Current state is not initialized.");
         }
-
         eventHistory.add(event);
-        System.out.println("Processing Event: " + event);
 
         // Retrieve all transitions for the event
         List<Transition> candidates = new ArrayList<>();
@@ -85,7 +82,6 @@ public class MachineInterpreter {
                 variables.put(varName, variables.getOrDefault(varName, 0) - 1);
             }
             this.currentState = selected.getTarget();
-            System.out.println("New State: " + this.currentState.getName());
         } else {
             // Fallback for specific event string operations if no matching transition
             if (event.equals("increment")) {
@@ -103,12 +99,15 @@ public class MachineInterpreter {
         }
     }
 
-    public List<String> getEventHistory() {
-        // Return the list of events processed
-        return eventHistory;
-    }
-
     public int getInteger(String name) {
         return variables.getOrDefault(name, 0);
+    }
+
+    public Machine getMachine() {
+        return machine;
+    }
+
+    public void setMachine(Machine machine) {
+        this.machine = machine;
     }
 }
