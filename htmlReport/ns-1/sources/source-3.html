@@ -1,0 +1,381 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MachineStructureTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">test</a>
+</div>
+
+<h1>Coverage Summary for Class: MachineStructureTest (test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MachineStructureTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (171/171)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package test;
+&nbsp;import static org.junit.jupiter.api.Assertions.assertEquals;
+&nbsp;import static org.junit.jupiter.api.Assertions.assertFalse;
+&nbsp;import static org.junit.jupiter.api.Assertions.assertTrue;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.junit.jupiter.api.BeforeEach;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;
+&nbsp;import main.StateMachine;
+&nbsp;import main.metamodel.Machine;
+&nbsp;import main.metamodel.State;
+&nbsp;import main.metamodel.Transition;
+&nbsp;
+<b class="fc">&nbsp;public class MachineStructureTest {</b>
+&nbsp;	private StateMachine stateMachine;
+&nbsp;	
+&nbsp;	@BeforeEach
+&nbsp;	public void init() {
+<b class="fc">&nbsp;		stateMachine = new StateMachine();</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void emptyMachine() {
+<b class="fc">&nbsp;		Machine m = stateMachine.build();</b>
+&nbsp;		
+<b class="fc">&nbsp;		assertTrue(m.getStates().isEmpty());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void states() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;						state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;						build();</b>
+<b class="fc">&nbsp;		List&lt;State&gt; states = m.getStates();</b>
+<b class="fc">&nbsp;		assertEquals(3, m.getStates().size());</b>
+<b class="fc">&nbsp;		assertTrue(states.stream().anyMatch(state -&gt; state.getName().equals(&quot;state 1&quot;)));</b>
+<b class="fc">&nbsp;		assertTrue(states.stream().anyMatch(state -&gt; state.getName().equals(&quot;state 2&quot;)));</b>
+<b class="fc">&nbsp;		assertTrue(states.stream().anyMatch(state -&gt; state.getName().equals(&quot;state 3&quot;)));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void initialFirstState() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;				state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+&nbsp;
+<b class="fc">&nbsp;		assertEquals(&quot;state 1&quot;, m.getInitialState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void initialState() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 2&quot;).initial().</b>
+<b class="fc">&nbsp;				state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+&nbsp;
+<b class="fc">&nbsp;		assertEquals(&quot;state 2&quot;, m.getInitialState().getName());		</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void getState() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 2&quot;).initial().</b>
+<b class="fc">&nbsp;				state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 2&quot;, m.getState(&quot;state 2&quot;).getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void noTransitions() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+&nbsp;		
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+<b class="fc">&nbsp;		List&lt;Transition&gt; transitions = state.getTransitions();</b>
+<b class="fc">&nbsp;		assertTrue(transitions.isEmpty());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitions() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;change to 2&quot;).to(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;change to 3&quot;).to(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;change to 3&quot;).to(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+<b class="fc">&nbsp;		List&lt;Transition&gt; transitions = state.getTransitions();</b>
+<b class="fc">&nbsp;		assertEquals(2, transitions.size());</b>
+<b class="fc">&nbsp;		assertTrue(transitions.stream().anyMatch(transition -&gt; transition.getEvent().equals(&quot;change to 2&quot;)));</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 2&quot;, state.getTransitionByEvent(&quot;change to 2&quot;).getTarget().getName());</b>
+<b class="fc">&nbsp;		assertTrue(transitions.stream().anyMatch(transition -&gt; transition.getEvent().equals(&quot;change to 3&quot;)));</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 3&quot;, state.getTransitionByEvent(&quot;change to 3&quot;).getTarget().getName());</b>
+&nbsp;		
+<b class="fc">&nbsp;		state = m.getState(&quot;state 2&quot;);</b>
+<b class="fc">&nbsp;		transitions = state.getTransitions();</b>
+<b class="fc">&nbsp;		assertEquals(1, transitions.size());</b>
+<b class="fc">&nbsp;		assertTrue(transitions.stream().anyMatch(transition -&gt; transition.getEvent().equals(&quot;change to 3&quot;)));</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 3&quot;, state.getTransitionByEvent(&quot;change to 3&quot;).getTarget().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void noVariables() {
+<b class="fc">&nbsp;		Machine m = stateMachine.build();</b>
+<b class="fc">&nbsp;		assertEquals(0, m.numberOfIntegers());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void addVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		assertEquals(1, m.numberOfIntegers());</b>
+<b class="fc">&nbsp;		assertTrue(m.hasInteger(&quot;var&quot;));</b>
+<b class="fc">&nbsp;		assertFalse(m.hasInteger(&quot;var 2&quot;));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionSetVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;SET&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		Transition transition = m.getState(&quot;state 1&quot;).getTransitions().get(0);</b>
+<b class="fc">&nbsp;		assertTrue(transition.hasSetOperation());</b>
+<b class="fc">&nbsp;		assertFalse(transition.hasIncrementOperation());</b>
+<b class="fc">&nbsp;		assertFalse(transition.hasDecrementOperation());</b>
+<b class="fc">&nbsp;		assertEquals(&quot;var&quot;, transition.getOperationVariableName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIncrementVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;SET&quot;).to(&quot;state 2&quot;).increment(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		Transition transition = m.getState(&quot;state 1&quot;).getTransitions().get(0);</b>
+<b class="fc">&nbsp;		assertFalse(transition.hasSetOperation());</b>
+<b class="fc">&nbsp;		assertTrue(transition.hasIncrementOperation());</b>
+<b class="fc">&nbsp;		assertFalse(transition.hasDecrementOperation());</b>
+<b class="fc">&nbsp;		assertEquals(&quot;var&quot;, transition.getOperationVariableName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionDecrementVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;SET&quot;).to(&quot;state 2&quot;).decrement(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		Transition transition = m.getState(&quot;state 1&quot;).getTransitions().get(0);</b>
+<b class="fc">&nbsp;		assertFalse(transition.hasSetOperation());</b>
+<b class="fc">&nbsp;		assertFalse(transition.hasIncrementOperation());</b>
+<b class="fc">&nbsp;		assertTrue(transition.hasDecrementOperation());</b>
+<b class="fc">&nbsp;		assertEquals(&quot;var&quot;, transition.getOperationVariableName());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableEqual() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).ifEquals(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+&nbsp;		
+<b class="fc">&nbsp;		Transition transition = state.getTransitions().get(0);</b>
+<b class="fc">&nbsp;        assertTrue(transition.isConditional());</b>
+<b class="fc">&nbsp;        assertEquals(&quot;var&quot;, transition.getConditionVariableName());</b>
+<b class="fc">&nbsp;        assertEquals(42, transition.getConditionComparedValue());</b>
+<b class="fc">&nbsp;        assertTrue(transition.isConditionEqual());</b>
+<b class="fc">&nbsp;        assertFalse(transition.isConditionGreaterThan());</b>
+<b class="fc">&nbsp;        assertFalse(transition.isConditionLessThan());</b>
+&nbsp;
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableGreaterThan() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).ifGreaterThan(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+&nbsp;		
+<b class="fc">&nbsp;		Transition transition = state.getTransitions().get(0);</b>
+<b class="fc">&nbsp;	    assertTrue(transition.isConditional());</b>
+<b class="fc">&nbsp;	    assertEquals(&quot;var&quot;, transition.getConditionVariableName());</b>
+<b class="fc">&nbsp;	    assertEquals(42, transition.getConditionComparedValue());</b>
+<b class="fc">&nbsp;	    assertFalse(transition.isConditionEqual());</b>
+<b class="fc">&nbsp;	    assertTrue(transition.isConditionGreaterThan());</b>
+<b class="fc">&nbsp;	    assertFalse(transition.isConditionLessThan());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableLessThan() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).ifLessThan(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+&nbsp;		
+<b class="fc">&nbsp;		Transition transition = state.getTransitions().get(0);</b>
+<b class="fc">&nbsp;        assertTrue(transition.isConditional());</b>
+<b class="fc">&nbsp;        assertEquals(&quot;var&quot;, transition.getConditionVariableName());</b>
+<b class="fc">&nbsp;        assertEquals(42, transition.getConditionComparedValue());</b>
+<b class="fc">&nbsp;        assertFalse(transition.isConditionEqual());</b>
+<b class="fc">&nbsp;        assertFalse(transition.isConditionGreaterThan());</b>
+<b class="fc">&nbsp;        assertTrue(transition.isConditionLessThan());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableEqualsAndSet() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 10).ifEquals(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+&nbsp;		
+<b class="fc">&nbsp;		Transition transition = state.getTransitions().get(0);</b>
+<b class="fc">&nbsp;		assertTrue(transition.isConditional());</b>
+<b class="fc">&nbsp;		assertTrue(transition.hasSetOperation());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableGreaterAndIncrement() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).increment(&quot;var&quot;).ifGreaterThan(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+&nbsp;		
+<b class="fc">&nbsp;		Transition transition = state.getTransitions().get(0);</b>
+<b class="fc">&nbsp;		assertTrue(transition.isConditional());</b>
+<b class="fc">&nbsp;		assertTrue(transition.hasOperation());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableLessAndDecrement() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).decrement(&quot;var&quot;).ifLessThan(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		State state = m.getState(&quot;state 1&quot;);</b>
+&nbsp;		
+<b class="fc">&nbsp;		Transition transition = state.getTransitions().get(0);</b>
+<b class="fc">&nbsp;		assertTrue(transition.isConditional());</b>
+<b class="fc">&nbsp;		assertTrue(transition.hasOperation());</b>
+&nbsp;	}
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-02-28 09:10</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,388 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MachineInterpreterTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">test</a>
+</div>
+
+<h1>Coverage Summary for Class: MachineInterpreterTest (test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MachineInterpreterTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (190/190)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package test;
+&nbsp;
+&nbsp;import static org.junit.jupiter.api.Assertions.assertEquals;
+&nbsp;
+&nbsp;import main.MachineInterpreter;
+&nbsp;import main.StateMachine;
+&nbsp;import main.metamodel.Machine;
+&nbsp;import org.junit.jupiter.api.BeforeEach;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;
+<b class="fc">&nbsp;public class MachineInterpreterTest {</b>
+&nbsp;	private StateMachine stateMachine;
+&nbsp;	private MachineInterpreter interpreter;
+&nbsp;	
+&nbsp;	@BeforeEach
+&nbsp;	public void init() {
+<b class="fc">&nbsp;		stateMachine = new StateMachine();</b>
+<b class="fc">&nbsp;		interpreter = new MachineInterpreter();</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void startInitState() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 1&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void eventNoTransition() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;					when(&quot;FIRE&quot;).to(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;to 2&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 1&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void eventTransition() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;					when(&quot;FIRE&quot;).to(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;FIRE&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 2&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void listOfEvents() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;					when(&quot;ON&quot;).to(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					when(&quot;GO&quot;).to(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;ON&quot;);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 3&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void chooseTransition() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;				state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;					when(&quot;FIRE2&quot;).to(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					when(&quot;FIRE3&quot;).to(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					when(&quot;FIRE4&quot;).to(&quot;state 4&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;				state(&quot;state 4&quot;).</b>
+<b class="fc">&nbsp;				build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;FIRE3&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 3&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void initVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		assertEquals(0, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionSetVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;SET&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;SET&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(42, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIncrementVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;SET&quot;).to(&quot;state 2&quot;).increment(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;SET&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(1, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionDecrementVariable() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;SET&quot;).to(&quot;state 2&quot;).decrement(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;SET&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(-1, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableEqual() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 3&quot;).ifEquals(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 3&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableNotEqual() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 3&quot;).ifEquals(&quot;var&quot;, 40).</b>
+<b class="fc">&nbsp;					state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 2&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableGreaterThan() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 3&quot;).ifGreaterThan(&quot;var&quot;, 40).</b>
+<b class="fc">&nbsp;					state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 3&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableNotGreaterThan() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 3&quot;).ifGreaterThan(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 2&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableLessThan() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 3&quot;).ifLessThan(&quot;var&quot;, 45).</b>
+<b class="fc">&nbsp;					state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 3&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableNotLessThan() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 3&quot;).ifLessThan(&quot;var&quot;, 42).</b>
+<b class="fc">&nbsp;					state(&quot;state 3&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(&quot;state 2&quot;, interpreter.getCurrentState().getName());</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableEqualsAndSet() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).set(&quot;var&quot;, 42).ifEquals(&quot;var&quot;, 0).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(42, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableGreaterAndIncrement() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).increment(&quot;var&quot;).ifGreaterThan(&quot;var&quot;, -1).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(1, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	@Test
+&nbsp;	public void transitionIfVariableLessAndDecrement() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).decrement(&quot;var&quot;).ifLessThan(&quot;var&quot;, 1).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(-1, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	@Test
+&nbsp;	public void transitionOrder() {
+<b class="fc">&nbsp;		Machine m = stateMachine.</b>
+<b class="fc">&nbsp;					integer(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 1&quot;).initial().</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).increment(&quot;var&quot;).</b>
+<b class="fc">&nbsp;						when(&quot;GO&quot;).to(&quot;state 2&quot;).decrement(&quot;var&quot;).</b>
+<b class="fc">&nbsp;					state(&quot;state 2&quot;).</b>
+<b class="fc">&nbsp;					build();</b>
+<b class="fc">&nbsp;		interpreter.run(m);</b>
+<b class="fc">&nbsp;		interpreter.processEvent(&quot;GO&quot;);</b>
+<b class="fc">&nbsp;		assertEquals(1, interpreter.getInteger(&quot;var&quot;));</b>
+&nbsp;	}
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-02-28 09:10</div>
+</div>
+</body>
+</html>

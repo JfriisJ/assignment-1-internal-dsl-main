@@ -13,19 +13,14 @@ import java.util.Map;
 public class MachineInterpreter {
 
     private State currentState;
-    private Machine machine;
-    private final List<String> eventHistory;
     private final Map<String, Integer> variables;
 
     public MachineInterpreter() {
         this.currentState = null;
-        this.machine = null;
-        this.eventHistory = new ArrayList<>();
         this.variables = new HashMap<>();
     }
     public void run(Machine m) {
         // Assign the machine before using it
-        this.machine = m;
         this.currentState = m.getInitialState();
         if (this.currentState == null) {
             throw new IllegalStateException("Initial state is not set.");
@@ -41,8 +36,6 @@ public class MachineInterpreter {
         if (this.currentState == null) {
             throw new IllegalStateException("Current state is not initialized.");
         }
-        eventHistory.add(event);
-
         // Retrieve all transitions for the event
         List<Transition> candidates = new ArrayList<>();
         for (Transition t : this.currentState.getTransitions()) {
@@ -101,13 +94,5 @@ public class MachineInterpreter {
 
     public int getInteger(String name) {
         return variables.getOrDefault(name, 0);
-    }
-
-    public Machine getMachine() {
-        return machine;
-    }
-
-    public void setMachine(Machine machine) {
-        this.machine = machine;
     }
 }
